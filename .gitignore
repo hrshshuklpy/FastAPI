@@ -1,1 +1,4 @@
 /FastAPIenv/
+/todoApp/test/
+/.pytest_cache/
+/testdb.db
