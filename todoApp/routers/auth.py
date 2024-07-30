@@ -77,7 +77,7 @@ async def get_current_user(request: Request):
         user_id: str = payload.get('id')
         user_role: str = payload.get('role')
         if username is None or user_id is None:
-            await logout(request)
+            return await logout(request)
         return {'username': username, 'id': user_id, 'role': user_role}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
