@@ -80,8 +80,8 @@ async def get_current_user(request: Request):
             return await logout(request)
         return {'username': username, 'id': user_id, 'role': user_role}
     except JWTError:
-        # return await logout(request)
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
+        return None
+        # raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
 
 
 @router.post("/register", response_class=HTMLResponse)
