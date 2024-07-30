@@ -12,6 +12,7 @@ from .auth import get_current_user, bcrypt_context, logout
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+
 router = APIRouter(
     prefix='/user',
     tags=['user']
@@ -51,10 +52,10 @@ async def get_user(user: user_dependency, db: db_dependency):
 
 # change_password(request: Request, user: user_dependency,db: db_dependency, user_verification: UserVerification):
 
-@router.post('/password', response_class=HTMLResponse)
-async def change_password(request: Request, db: db_dependency, username: str = Form(...), password: str = Form(...),
+@router.put('/password', response_class=HTMLResponse)
+async def change_password(request: Request, user: user_dependency, db: db_dependency, username: str = Form(...), password: str = Form(...),
                           new_password: str = Form(...)):
-    user = db.query(Users).filter(Users.username == username).first()
+    # user = db.query(Users).filter(Users.username == username).first()
     if user is None:
         return await logout(request)
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
