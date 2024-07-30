@@ -71,7 +71,7 @@ async def get_current_user(request: Request):
     try:
         token = request.cookies.get("access_token")
         if token is None:
-            return None
+            return await logout(request)
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: str = payload.get('id')
@@ -80,7 +80,8 @@ async def get_current_user(request: Request):
             return await logout(request)
         return {'username': username, 'id': user_id, 'role': user_role}
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
+        return await logout(request)
+        # raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user')
 
 
 @router.post("/register", response_class=HTMLResponse)
