@@ -62,7 +62,7 @@ async def change_password(request: Request, user: user_dependency, db: db_depend
     if user_model is None:
         msg = 'Session expired'
         return templates.TemplateResponse('login.html', {'request': request, 'msg': msg})
-    if user_model.username != username:
+    if user.get('username') != username:
         msg = 'Incorrect username'
         return templates.TemplateResponse('password.html', {'request': request, 'msg': msg})
     if not bcrypt_context.verify(password, user_model.hashed_password):
