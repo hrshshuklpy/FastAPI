@@ -71,7 +71,7 @@ async def get_current_user(request: Request):
     try:
         token = request.cookies.get("access_token")
         if token is None:
-            return await logout(request)
+            return None
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username: str = payload.get('sub')
         user_id: str = payload.get('id')
