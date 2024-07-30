@@ -10,7 +10,7 @@ prod_DB = "postgresql://harshshukla:8U3OJzWgCU98eFjDbiHgF6rLJWU3NjMo@dpg-cqj460a
 
 test_DB = "sqlite:///./todosapp.db"
 
-engine = create_engine(prod_DB)
+engine = create_engine(test_DB)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()

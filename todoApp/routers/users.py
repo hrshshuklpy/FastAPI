@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.params import Form
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 from starlette import status
@@ -48,19 +49,22 @@ async def get_user(user: user_dependency, db: db_dependency):
     return db.query(Users).filter(Users.id == user.get('id')).first()
 
 
+# change_password(request: Request, user: user_dependency,db: db_dependency, user_verification: UserVerification):
+
 @router.post('/password', response_class=HTMLResponse)
-async def change_password(request: Request, user: user_dependency,
-                          db: db_dependency, user_verification: UserVerification):
+async def change_password(request: Request, db: db_dependency, username: str = Form(...), password: str = Form(...),
+                          new_password: str = Form(...)):
+    user = db.query(Users).filter(Users.username == username).first()
     if user is None:
         return await logout(request)
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
     if user_model is None:
         msg = 'Session expired'
         return templates.TemplateResponse('login.html', {'request': request, 'msg': msg})
-    if not bcrypt_context.verify(user_verification.password, user_model.hashed_password):
+    if not bcrypt_context.verify(password, user_model.hashed_password):
         msg = 'Password match failed'
         return templates.TemplateResponse('password.html', {'request': request, 'msg': msg})
-    user_model.hashed_password = bcrypt_context.hash(user_verification.new_password)
+    user_model.hashed_password = bcrypt_context.hash(new_password)
     db.add(user_model)
     db.commit()
     return RedirectResponse(url='/todos', status_code=status.HTTP_302_FOUND)
@@ -78,3 +82,8 @@ async def change_phone_number(user: user_dependency, db: db_dependency, user_ver
     user_model.phone_number = user_verification.new_number
     db.add(user_model)
     db.commit()
+
+
+@router.get("/password_change", response_class=HTMLResponse)
+async def password_change(request: Request):
+    return templates.TemplateResponse("password.html", {"request": request})
