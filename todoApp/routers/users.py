@@ -52,7 +52,7 @@ async def get_user(user: user_dependency, db: db_dependency):
 
 # change_password(request: Request, user: user_dependency,db: db_dependency, user_verification: UserVerification):
 
-@router.put('/password', response_class=HTMLResponse)
+@router.post('/password', response_class=HTMLResponse)
 async def change_password(request: Request, user: user_dependency, db: db_dependency, username: str = Form(...), password: str = Form(...),
                           new_password: str = Form(...)):
     # user = db.query(Users).filter(Users.username == username).first()
