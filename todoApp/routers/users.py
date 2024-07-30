@@ -48,11 +48,11 @@ async def get_user(user: user_dependency, db: db_dependency):
     return db.query(Users).filter(Users.id == user.get('id')).first()
 
 
-@router.get('/password', response_class=HTMLResponse)
+@router.post('/password', response_class=HTMLResponse)
 async def change_password(request: Request, user: user_dependency,
                           db: db_dependency, user_verification: UserVerification):
     if user is None:
-        await logout(request)
+        return await logout(request)
     user_model = db.query(Users).filter(Users.id == user.get('id')).first()
     if user_model is None:
         msg = 'Session expired'
